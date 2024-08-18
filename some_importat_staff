@@ -1,0 +1,67 @@
+<-----------------upload folder path---------------->
+profile path = C:\Users\hacker\PycharmProjects\final\blueprint\view\static\upload\profile
+resource path = C:\Users\hacker\PycharmProjects\final\blueprint\view\static\upload\resoursde
+
+<-----------------my phone mysql info----------------->
+PASSWORD = DEVILO.K
+USERNAME = root
+<-------------------my pc msql info------------------->
+username = root
+password = DEVILO.K@2019
+
+<---------------------start mysql server on my pc---------------------->
+windows key + R
+services.msc
+<---------------some other staff------------------>
+C:\Windows\System32\cmd.exe
+<----------------python code ---------------------->
+url_prefix
+<----------------db_tables---------------->
+rout:
+record_attendance/<grade>/<section>
+assessment_insert/<grade>/<section>
+Teacher_course_info
+[('123', '6N61B1', 'BHB5', 'G4', '1', datetime.date(2024, 5, 8), 1), ('1234', 'SFV1UA', 'BHB5', 'G4', '1', datetime.date(2024, 5, 9), 1), ('23', '6N61B1', 'BH
+B5', 'G4', '1', datetime.date(2024, 5, 9), 0), ('34', '6N61B1', 'BHB5', 'G4', '1', datetime.date(2024, 5, 9), 2)]
+
+
+
+@View.route("/Student_Assessment")
+def student_assessment():
+    if "userID" in session:
+        userID = session["userID"]
+        role =  session["role"]
+        if role == "student":
+            with db.connect() as conn:
+                courses = var.COURSESID
+                filter_assessment1 = []
+                for cours in courses:
+                    assessments = db.Assessements_ifo(
+                        conn,userID,False,"student",sem="s1",CourseID=cours
+                    )
+                    print(assessments)
+                    if len(assessments) > 0:
+                        filter_assessment1.append([var.ID_COURSE[cours],assessments])
+                if len(filter_assessment1) == 0:
+                    filter_assessment1 = "Empty no data yet!"
+                filter_assessment2 = []
+                for cours in courses:
+                    assessments = db.Assessements_ifo(
+                        conn,userID,False,"student",sem="s2",CourseID=cours
+                    )
+                    if len(assessments) > 0:
+                        filter_assessment2.append([var.ID_COURSE[cours], assessments])
+                if len(filter_assessment2) == 0:
+                    filter_assessment2 = "Empty no data yet!"
+            Student_assessment_info = [
+                session["user"], filter_assessment1,filter_assessment2
+            ]
+            print(Student_assessment_info)
+            return render_template("student/student_assessment.html",data=Student_assessment_info)
+        else:
+            return redirect(url_for("view.unauthorized"))
+    else:
+        return redirect(url_for("login.user_login"))
+
+strcture = ['omer kemal', [['Ict', [('1GN7', 'test2', '9', 'i-ct', 's1', 'BHB5', '6N61B1', 'G4', '1'), ('U8HB', 'test1', '8', 'i-ct', 's1', 'BHB5', '6N61B1', 'G4', '1'),
+ ('W9V2', 'assigment1', '7', 'i-ct', 's1', 'BHB5', '6N61B1', 'G4', '1')]]]

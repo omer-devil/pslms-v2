@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    p.hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <form name="myform" onsubmit="format_me(5); return false;">
+    <label>
+      <p id="id1" class="hidden">1527</p>
+      <input type="radio" name="status1" value="present">present
+      <input type="radio" name="status1" value="absent">absent<br>
+    </label>
+    <label>
+      <p id="id2" class="hidden">63732</p>
+      <input type="radio" name="status2" value="present">present
+      <input type="radio" name="status2" value="absent">absent<br>
+    </label>
+    <label>
+      <p id="id3" class="hidden">37373</p>
+      <input type="radio" name="status3" value="present">present
+      <input type="radio" name="status3" value="absent">absent<br>
+    </label>
+    <label>
+      <p id="id4" class="hidden">47373</p>
+      <input type="radio" name="status4" value="present">present
+      <input type="radio" name="status4" value="absent">absent<br>
+    </label>
+    <label>
+      <p id="id5" class="hidden">63735</p>
+      <input type="radio" name="status5" value="present">present
+      <input type="radio" name="status5" value="absent">absent<br>
+    </label>
+    <input type="submit" name="submit">
+  </form>
+  <p id="result"></p>
+  <script>
+    function format_me(n){
+      var dic = {};
+      for (var i = 1; i <= n; i++) {
+        var id = "id" + i;
+        var status = "status" + i;
+        var pElement = document.getElementById(id);
+        if (pElement) {
+          dic[pElement.textContent] = document.querySelector('input[name="' + status + '"]:checked').value;
+        }
+      }
+      fetch('http://127.0.0.1:5000/record_attendance/<grade>/<section>', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ "value": dic }),
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        document.getElementById("result").innerText = JSON.stringify(data);
+      })
+      .catch(error => console.error('Error:', error));
+    }
+  </script>
+</body>
+</html>

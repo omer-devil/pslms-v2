@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Primary School Learning Management System</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="{{ url_for('static',filename = 'img/favicon.ico') }}" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="{{ url_for('static',filename = 'lib/animate/animate.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static',filename = 'lib/owlcarousel/assets/owl.carousel.min.css') }}" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="{{ url_for('static',filename = 'css/bootstrap.min.css') }}" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="{{ url_for('static',filename = 'css/style.css') }}" rel="stylesheet">
+    <style>
+    .tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+}
+
+/* Style the buttons that are used to open the tab content */
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+  display: none;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-top: none;
+}
+  </style>
+</head>
+
+<body>
+    <!-- Spinner Start -->
+    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- Spinner End -->
+
+
+    <!-- Navbar Start -->
+    <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
+        <a href="/profile" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
+            <h2 class="m-0 text-primary"><i class="fa fa-book me-3"></i>PSLMS</h2>
+        </a>
+        <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav ms-auto p-4 p-lg-0">
+                <a href="/student_course_info" class="nav-item nav-link">Subjects</a>
+                <a href="/Student_Assessment" class="nav-item nav-link">Assessment</a>
+                <a href="/get_student_attendance_info" class="nav-item nav-link active">Attendance</a>
+                <a href="/get_resource" class="nav-item nav-link">Resource</a>
+            </div>
+            <a href="/logout" class="nav-item nav-link logout" >Log Out</a>
+        </div>
+    </nav>
+    <!-- Navbar End -->
+    <div class="tab">
+  <button class="tablinks" onclick="openTerms(event, 'First semester')">First semester</button>
+  <button class="tablinks" onclick="openTerms(event, 'Second semester')">Second semester</button>
+</div>
+
+<!-- Tab content -->
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white text-center">
+                    <h2>Assessment for {{ data[0] }}</h2>
+                </div>
+                <div class="card-body">
+                    <h3 class="mb-3">Semester 1</h3>
+                    {% if data[1] == "Empty no data yet!" %}
+                        <p>{{ data[1] }}</p>
+                    {% else %}
+                        {% for course, assessments in data[1] %}
+                            <h4 class="mt-4">{{ course }}</h4>
+                            <table class="table table-bordered" id="semester1Table">
+                                <thead class="thead-light">
+                                    <tr>
+                                        {% for assessment in assessments %}
+                                            <th scope="col">{{ assessment[1] }}</th>
+                                        {% endfor %}
+                                        <th scope="col">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        {% for assessment in assessments %}
+                                            <td>{{ assessment[2] }}</td>
+                                        {% endfor %}
+                                        <td class="totalScore"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h3 class="mb-3">Semester 2</h3>
+                    {% if data[2] == "Empty no data yet!" %}
+                        <p>{{ data[2] }}</p>
+                    {% else %}
+                        {% for course, assessments in data[2] %}
+                            <h4 class="mt-4">{{ course }}</h4>
+                            <table class="table table-bordered" id="semester2Table">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col">Assessment Type</th>
+                                        {% for assessment in assessments %}
+                                            <th scope="col">{{ assessment[1] }}</th>
+                                        {% endfor %}
+                                        <th scope="col">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        {% for assessment in assessments %}
+                                            <td>{{ assessment[2] }}</td>
+                                        {% endfor %}
+                                        <td class="totalScore"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Calculate total score for Semester 1
+    var semester1Rows = document.querySelectorAll("#semester1Table tbody tr");
+    semester1Rows.forEach(function(row) {
+        var totalScoreCell = row.querySelector(".totalScore");
+        var totalScore = 0;
+        var scoreCells = row.querySelectorAll("td:not(.totalScore)");
+        scoreCells.forEach(function(cell) {
+            totalScore += parseInt(cell.textContent);
+        });
+        totalScoreCell.textContent = totalScore;
+    });
+    // Calculate total score for Semester 2
+    var semester2Rows = document.querySelectorAll("#semester2Table tbody tr");
+    semester2Rows.forEach(function(row) {
+        var totalScoreCell = row.querySelector(".totalScore");
+        var totalScore = 0;
+        var scoreCells = row.querySelectorAll("td:not(.totalScore)");
+        scoreCells.forEach(function(cell) {
+            totalScore += parseInt(cell.textContent);
+        });
+        totalScoreCell.textContent = totalScore;
+    });
+</script>
+
+    <!-- Footer Start -->
+    <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
+        <div class="container py-5">
+            <div class="row g-5">
+                <div class="col-lg-3 col-md-6">
+                    <h4 class="text-white mb-3">Quick Link</h4>
+                    <a class="btn btn-link" href="">About Us</a>
+                    <a class="btn btn-link" href="">Contact Us</a>
+
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h4 class="text-white mb-3">Contact</h4>
+                    <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>123 Street, Harar, Ethiopia</p>
+                    <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+012 345 67890</p>
+                    <p class="mb-2"><i class="fa fa-envelope me-3"></i>info@example.com</p>
+
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h4 class="text-white mb-3">Gallery</h4>
+                    <div class="row g-2 pt-2">
+                        <div class="col-4">
+                            <img class="img-fluid bg-light p-1" src="{{ url_for('static',filename = 'img/et1.jpg') }}" alt="">
+                        </div>
+                        <div class="col-4">
+                            <img class="img-fluid bg-light p-1" src="{{ url_for('static',filename = 'img/et2.jpg') }}" alt="">
+                        </div>
+                        <div class="col-4">
+                            <img class="img-fluid bg-light p-1" src="{{ url_for('static',filename = 'img/et3.jpg') }}" alt="">
+                        </div>
+                        <div class="col-4">
+                            <img class="img-fluid bg-light p-1" src="{{ url_for('static',filename = 'img/et4.jpg') }}" alt="">
+                        </div>
+                        <div class="col-4">
+                            <img class="img-fluid bg-light p-1" src="{{ url_for('static',filename = 'img/et5.jpg') }}" alt="">
+                        </div>
+                        <div class="col-4">
+                            <img class="img-fluid bg-light p-1" src="{{ url_for('static',filename = 'img/et6.jpg') }}" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- Footer End -->
+
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+    <script>
+  function openTerms(evt, terms) {
+  // Declare all variables
+  var i, tabcontent, tablinks;
+
+  // Get all elements with class="tabcontent" and hide them
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+
+  // Get all elements with class="tablinks" and remove the class "active"
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+
+  // Show the current tab, and add an "active" class to the button that opened the tab
+  document.getElementById(terms).style.display = "block";
+  evt.currentTarget.className += " active";
+}
+  </script>
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static',filename = 'lib/wow/wow.min.js') }}"></script>
+    <script src="{{ url_for('static',filename = 'lib/easing/easing.min.js') }}"></script>
+    <script src="{{ url_for('static',filename = 'lib/waypoints/waypoints.min.js') }}"></script>
+    <script src="{{ url_for('static',filename = 'lib/owlcarousel/owl.carousel.min.js') }}"></script>
+
+    <!-- Template Javascript -->
+    <script src="{{ url_for('static',filename = 'js/main.js') }}"></script>
+</body>
+
+
+</html>
